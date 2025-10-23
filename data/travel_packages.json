@@ -1,0 +1,52 @@
+{
+  "packages": [
+    {
+      "id": 1,
+      "destination": "Paris",
+      "country": "France",
+      "package_name": "Romantic Paris Getaway",
+      "duration": 7,
+      "price": 2500,
+      "currency": "USD",
+      "includes": ["Flight", "Hotel", "Breakfast", "City Tour", "Seine River Cruise"],
+      "category": "romantic",
+      "best_season": ["spring", "fall"],
+      "difficulty": "easy",
+      "group_size": "2-4",
+      "highlights": ["Eiffel Tower", "Louvre Museum", "Montmartre", "Champs-Élysées"],
+      "rating": 4.8
+    },
+    {
+      "id": 2,
+      "destination": "Tokyo",
+      "country": "Japan",
+      "package_name": "Cultural Japan Experience",
+      "duration": 10,
+      "price": 3200,
+      "currency": "USD",
+      "includes": ["Flight", "Hotel", "Breakfast", "Cultural Tours", "Traditional Dinner"],
+      "category": "cultural",
+      "best_season": ["spring", "fall"],
+      "difficulty": "moderate",
+      "group_size": "4-8",
+      "highlights": ["Tokyo Tower", "Mount Fuji", "Traditional Temples", "Cherry Blossoms"],
+      "rating": 4.9
+    },
+    {
+      "id": 3,
+      "destination": "Bali",
+      "country": "Indonesia",
+      "package_name": "Tropical Paradise Adventure",
+      "duration": 8,
+      "price": 1800,
+      "currency": "USD",
+      "includes": ["Hotel", "Breakfast", "Island Tours", "Water Sports", "Spa Treatment"],
+      "category": "adventure",
+      "best_season": ["summer", "winter"],
+      "difficulty": "moderate",
+      "group_size": "2-6",
+      "highlights": ["Beautiful Beaches", "Rice Terraces", "Volcano Tours", "Traditional Villages"],
+      "rating": 4.7
+    }
+  ]
+}

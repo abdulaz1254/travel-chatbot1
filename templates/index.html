@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Assistant with Gemini</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>🤖 AI Travel Assistant</h2>
+                <p>Powered by Gemini AI with Real Travel Data</p>
+                <div class="user-settings">
+                    <select id="userCountry">
+                        <option value="US">United States</option>
+                        <option value="India">India</option>
+                        <option value="China">China</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="UK">United Kingdom</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        Hello! I'm your AI travel assistant powered by Gemini AI. I have access to comprehensive travel data including:
+                        <ul>
+                            <li>🎒 Travel packages with real prices and details</li>
+                            <li>🌤️ Weather information for different seasons</li>
+                            <li>📋 Visa requirements and costs</li>
+                        </ul>
+                        Tell me about your dream trip, and I'll help you plan it perfectly!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-suggestions">
+                <div class="suggestion" onclick="sendQuickMessage('I want a romantic trip to Paris under $3000')">
+                    💕 Romantic Paris Trip
+                </div>
+                <div class="suggestion" onclick="sendQuickMessage('Show me adventure packages in Asia')">
+                    🏔️ Adventure in Asia
+                </div>
+                <div class="suggestion" onclick="sendQuickMessage('I need visa information for Japan from India')">
+                    📋 Visa Information
+                </div>
+                <div class="suggestion" onclick="sendQuickMessage('What is the weather like in Bali in summer?')">
+                    🌤️ Weather Info
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="Ask me about your travel plans..." />
+                <button id="sendButton" onclick="sendMessage()">
+                    <span id="buttonText">Send</span>
+                    <div id="buttonLoader" class="loader" style="display: none;"></div>
+                </button>
+                <button id="resetButton" onclick="resetChat()" title="Reset conversation">
+                    🔄
+                </button>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="data-info">
+                <h3>📊 Available Data</h3>
+                <div class="data-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="packageCount">0</span>
+                        <span class="stat-label">Travel Packages</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="destinationCount">0</span>
+                        <span class="stat-label">Destinations</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="countryCount">0</span>
+                        <span class="stat-label">Countries</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recent-queries">
+                <h3>💭 Recent Queries</h3>
+                <div id="recentQueries" class="query-list">
+                    <!-- Recent queries will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chatMessages = document.getElementById('chatMessages');
+        let messageInput = document.getElementById('messageInput');
+        let sendButton = document.getElementById('sendButton');
+        let userCountry = document.getElementById('userCountry');
+        let recentQueries = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDataStats();
+            loadRecentQueries();
+            messageInput.focus();
+        });
+
+        function addMessage(content, isUser = false, dataUsed = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            let messageHTML = `<div class="message-content">${formatMessage(content)}</div>`;
+            
+            if (!isUser && dataUsed.length > 0) {
+                messageHTML += `<div class="data-badges">
+                    <span class="badge-label">Data used:</span>
+                    ${dataUsed.map(data => `<span class="data-badge">${data}</span>`).join('')}
+                </div>`;
+            }
+            
+            messageDiv.innerHTML = messageHTML;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatMessage(text) {
+            // Convert markdown-like formatting to HTML
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>')
+                .replace(/• /g, '• ');
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message typing';
+            typingDiv.id = 'typing';
+            typingDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                    AI is thinking...
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
+        }
+
+        function setLoading(loading) {
+            const buttonText = document.getElementById('buttonText');
+            const buttonLoader = document.getElementById('buttonLoader');
+            
+            if (loading) {
+                buttonText.style.display = 'none';
+                buttonLoader.style.display = 'inline-block';
+                sendButton.disabled = true;
+            } else {
+                buttonText.style.display = 'inline';
+                buttonLoader.style.display = 'none';
+                sendButton.disabled = false;
+            }
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, true);
+            addToRecentQueries(message);
+            
+            messageInput.value = '';
+            setLoading(true);
+            showTyping();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        user_country: userCountry.value
+                    })
+                });
+
+                const data = await response.json();
+                hideTyping();
+
+                if (data.error) {
+                    addMessage(`Sorry, I encountered an error: ${data.error}`);
+                } else {
+                    addMessage(data.response, false, data.data_used || []);
+                }
+
+            } catch (error) {
+                hideTyping();
+                addMessage('Sorry, I encountered a network error. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function sendQuickMessage(message) {
+            messageInput.value = message;
+            sendMessage();
+        }
+
+        async function resetChat() {
+            try {
+                await fetch('/reset_chat', { method: 'POST' });
+                chatMessages.innerHTML = `
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            Hello! I'm your AI travel assistant. I've reset our conversation and I'm ready to help you plan your next adventure!
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error resetting chat:', error);
+            }
+        }
+
+        function addToRecentQueries(query) {
+            recentQueries.unshift(query);
+            if (recentQueries.length > 5) recentQueries.pop();
+            updateRecentQueries();
+        }
+
+        function updateRecentQueries() {
+            const container = document.getElementById('recentQueries');
+            container.innerHTML = recentQueries
+                .map(query => `<div class="query-item" onclick="sendQuickMessage('${query}')">${query}</div>`)
+                .join('');
+        }
+
+        function loadRecentQueries() {
+            const saved = localStorage.getItem('recentTravelQueries');
+            if (saved) {
+                recentQueries = JSON.parse(saved);
+                updateRecentQueries();
+            }
+        }
+
+        function updateDataStats() {
+            // These would be populated from your actual data
+            document.getElementById('packageCount').textContent = '15+';
+            document.getElementById('destinationCount').textContent = '10+';
+            document.getElementById('countryCount').textContent = '8+';
+        }
+
+        // Event listeners
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Save recent queries
+        window.addEventListener('beforeunload', function() {
+            localStorage.setItem('recentTravelQueries', JSON.stringify(recentQueries));
+        });
+    </script>
+</body>
+</html>

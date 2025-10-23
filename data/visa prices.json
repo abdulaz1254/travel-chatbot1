@@ -1,0 +1,32 @@
+{
+  "visa_data": {
+    "France": {
+      "tourist_visa": {
+        "US": {"required": false, "price": 0, "processing_days": 0},
+        "India": {"required": true, "price": 80, "processing_days": 15},
+        "China": {"required": true, "price": 60, "processing_days": 10},
+        "Brazil": {"required": false, "price": 0, "processing_days": 0}
+      },
+      "business_visa": {
+        "US": {"required": false, "price": 0, "processing_days": 0},
+        "India": {"required": true, "price": 80, "processing_days": 15},
+        "China": {"required": true, "price": 60, "processing_days": 10}
+      }
+    },
+    "Japan": {
+      "tourist_visa": {
+        "US": {"required": false, "price": 0, "processing_days": 0},
+        "India": {"required": false, "price": 0, "processing_days": 0},
+        "China": {"required": true, "price": 30, "processing_days": 5},
+        "Brazil": {"required": false, "price": 0, "processing_days": 0}
+      }
+    },
+    "Indonesia": {
+      "tourist_visa": {
+        "US": {"required": false, "price": 0, "processing_days": 0, "visa_on_arrival": true, "voa_price": 35},
+        "India": {"required": false, "price": 0, "processing_days": 0, "visa_on_arrival": true, "voa_price": 35},
+        "China": {"required": false, "price": 0, "processing_days": 0, "visa_on_arrival": true, "voa_price": 35}
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "weather_data": {
+    "Paris": {
+      "spring": {
+        "avg_temp": "15°C",
+        "rainfall": "moderate",
+        "conditions": "mild and pleasant",
+        "clothing": "light layers, light jacket"
+      },
+      "summer": {
+        "avg_temp": "24°C",
+        "rainfall": "low",
+        "conditions": "warm and sunny",
+        "clothing": "light clothing, sunhat"
+      },
+      "fall": {
+        "avg_temp": "12°C",
+        "rainfall": "moderate",
+        "conditions": "cool and crisp",
+        "clothing": "warm layers, rain jacket"
+      },
+      "winter": {
+        "avg_temp": "5°C",
+        "rainfall": "high",
+        "conditions": "cold and wet",
+        "clothing": "heavy coat, warm layers, umbrella"
+      }
+    },
+    "Tokyo": {
+      "spring": {
+        "avg_temp": "18°C",
+        "rainfall": "moderate",
+        "conditions": "perfect weather, cherry blossoms",
+        "clothing": "comfortable layers"
+      },
+      "summer": {
+        "avg_temp": "28°C",
+        "rainfall": "high",
+        "conditions": "hot and humid, rainy season",
+        "clothing": "light breathable clothes, rain gear"
+      },
+      "fall": {
+        "avg_temp": "20°C",
+        "rainfall": "low",
+        "conditions": "pleasant and mild",
+        "clothing": "light layers"
+      },
+      "winter": {
+        "avg_temp": "8°C",
+        "rainfall": "low",
+        "conditions": "cold but dry",
+        "clothing": "warm coat, layers"
+      }
+    },
+    "Bali": {
+      "dry_season": {
+        "avg_temp": "27°C",
+        "rainfall": "very low",
+        "conditions": "sunny and dry",
+        "clothing": "light summer clothes, swimwear",
+        "months": ["April", "May", "June", "July", "August", "September"]
+      },
+      "wet_season": {
+        "avg_temp": "26°C",
+        "rainfall": "high",
+        "conditions": "warm with afternoon showers",
+        "clothing": "light clothes, rain jacket",
+        "months": ["October", "November", "December", "January", "February", "March"]
+      }
+    }
+  }
+}
